@@ -69,6 +69,7 @@ unsigned int indices[] = {
 };
 
 glm::mat4 trans = glm::mat4(1.0f);
+glm::mat4 projection = glm::mat4(1.0f);
 
 int main() {
 	glfwInit();
@@ -90,8 +91,6 @@ int main() {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
-
-	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	unsigned int VBO;
@@ -114,7 +113,6 @@ int main() {
 	//glm::mat4 view = glm::mat4(1.0f);
 	//view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 
-	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
 	shader.setMat4("model", model);
@@ -141,6 +139,7 @@ int main() {
 		//model = glm::rotate(model, rotateValue, glm::vec3(0.5f, 1.0f, 0.0f));
 		shader.setMat4("model", model);
 		shader.setMat4("transform", trans);
+		shader.setMat4("projection", projection);
 
 		const float radius = 5.0f;
 		float camX = sin(glfwGetTime()) * radius;
@@ -174,9 +173,8 @@ int main() {
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
-	//shader.use();
-	//shader.setMat4("projection", projection);
+	float aspectRatio = (float)width / (float)height;
+    projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
 }
 
 void processInput(GLFWwindow* window) {
